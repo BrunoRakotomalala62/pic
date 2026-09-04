@@ -66,14 +66,22 @@ export function makeErr(code, message, status = 400, retryable = false, requestI
 }
 
 function upstreamError(body, fallbackMessage, requestId) {
-  const b = (typeof body === 'string') ? safeJson(body) : (body || {});
-  const er = b && b.error ? b.error : {};
+  // Corps de réponse upstream : peut être vide, non-JSON, ou JSON quelconque.
+  // Ne JAMAIS supposer la forme — tout accès passe par des gardes null.
+  let b = null;
+  if (typeof body === 'string') {
+    try { b = JSON.parse(body); } catch { b = null; }
+  } else if (body && typeof body === 'object') {
+    b = body;
+  }
+  const er = (b && typeof b === 'object' && b.error && typeof b.error === 'object') ? b.error : {};
+  const reqId = er.requestId || requestId || b.requestId || undefined;
   return makeErr(
     er.code || 'UPSTREAM_ERROR',
-    er.message || b.message || fallbackMessage,
-    er.status && er.status >= 400 ? er.status : (b.ok === false && !er.status ? 502 : 502),
+    er.message || (b && b.message) || fallbackMessage || 'Erreur du service distant',
+    (er.status && er.status >= 400 && er.status < 600) ? er.status : 502,
     !!er.retryable,
-    er.requestId || requestId || b.requestId
+    reqId
   );
 }
 

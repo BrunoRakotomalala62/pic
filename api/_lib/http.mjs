@@ -26,6 +26,9 @@ export function respond(res, status, obj, extra = {}) {
 
 // Convertit n'importe quelle erreur en réponse structurée façon Seedream.
 export function respondError(res, e, requestId = newRequestId()) {
+  if (!e || typeof e !== 'object') {
+    e = { code: 'INTERNAL_ERROR', message: String(e === null ? 'Erreur interne inconnue' : e), status: 500, retryable: false, requestId };
+  }
   const status = Number(e.status) >= 400 ? Number(e.status) : 500;
   const retryable = !!e.retryable;
   const code = e.code || 'INTERNAL_ERROR';
