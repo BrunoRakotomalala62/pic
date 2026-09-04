@@ -121,7 +121,10 @@ async function apiFetch(path, { method = 'GET', headers = {}, body, cookie, host
   }
   const text = await res.text().catch(() => '');
   if (!res.ok) {
-    throw upstreamError(text, `Upstream ${res.status} sur ${path}`, undefined);
+    // Inclut un extrait du corps (souvent la raison du blocage : JSON d'erreur,
+    // page Cloudflare, etc.) pour faciliter le diagnostic.
+    const snippet = text ? ' — ' + text.replace(/\s+/g, ' ').slice(0, 160) : '';
+    throw upstreamError(text, `Upstream ${res.status} sur ${path}${snippet}`, undefined);
   }
   return { res, text };
 }
