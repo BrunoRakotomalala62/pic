@@ -98,6 +98,33 @@ sur Vercel (instances éphémères multiples) ils sont best-effort. Pour un usag
 fiable, préférer le serveur standalone (Render / Railway / Fly.io / VPS) ou
 ajouter un stockage persistant (KV) pour le registre des jobs.
 
+> ⚠️ **Vercel = IP bloquée par seedream.pro** (constaté le 2026-09-04) : les
+> routes Vercel reçoivent `403 « Just a moment... »` (challenge Cloudflare) sur
+> `api.seedream.pro` **et** `auth.seedream.pro`. Le code y est fonctionnel
+> (erreurs structurées) mais l'IP/ASN de Vercel est challengée → **préférer
+> Render ou un autre hôte** (voir ci-dessous), puis tester la route.
+
+## Déploiement Render (recommandé)
+
+Le repo contient un `Dockerfile` (serveur standalone, zéro dépendance) et un
+`render.yaml` (Blueprint). Deux options :
+
+1. **Blueprint (le plus simple)** : sur render.com → *New + → Blueprint* →
+   sélectionner le repo `BrunoRakotomalala62/pic`. Render lit `render.yaml`,
+   crée le service et **te demande** `SEEDREAM_EMAIL` / `SEEDREAM_PASSWORD`.
+2. **Web Service manuel** : *New + → Web Service* → repo → *Runtime: Docker* →
+   region (essayer `Oregon`, puis `Frankfurt`/`Singapore` si 403) → variables
+   d'environnement `SEEDREAM_EMAIL`, `SEEDREAM_PASSWORD` → *Deploy*.
+
+Le service expose `/health` (utilisé comme healthcheck) et écoute sur `$PORT`.
+
+⚠️ Si les routes répondent `502 — Upstream 403 … Just a moment...`, l'IP de la
+région Render est challengée par Cloudflare → recréer le service dans une autre
+région (les IP diffèrent).
+
+⚠️ Plan free Render : le service s'endort après ~15 min d'inactivité (premier
+appel après réveil plus lent, ~30-60 s).
+
 ## Ce qui a été reverse-engineered (2026-09-04)
 
 - `GET https://api.seedream.pro/v1/guest/context` → `{data:{token:JWT, expiresAt}}` (10 min)

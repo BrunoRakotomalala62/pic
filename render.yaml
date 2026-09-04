@@ -1,0 +1,25 @@
+# Seedream API — Blueprint Render (déploiement via le bouton "New + → Blueprint"
+# ou "New + → Web Service" puis en choisissant le repo GitHub).
+#
+# ⚠️ Les variables SEEDREAM_EMAIL / SEEDREAM_PASSWORD sont demandées à la
+#    création (sync: false) — elles ne sont JAMAIS commitées dans le repo.
+#
+# Régions dispo (plan free) : oregon, ohio, frankfurt, singapore.
+# Si seedream.pro challenge l'IP de la région choisie (403 « Just a moment... »),
+# recrée le service dans une autre région.
+services:
+  - type: web
+    name: seedream-api
+    runtime: docker
+    repo: https://github.com/BrunoRakotomalala62/pic
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SEEDREAM_EMAIL
+        sync: false
+      - key: SEEDREAM_PASSWORD
+        sync: false
+      - key: RATE_LIMIT_PER_HOUR
+        value: "30"

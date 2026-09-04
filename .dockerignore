@@ -1,0 +1,14 @@
+# Jamais de secrets dans l'image
+.env
+.env.*
+!.env.example
+
+.git
+.gitignore
+*.log
+seedream-api.zip
+README.md
+Dockerfile
+render.yaml
+.dockerignore
+node_modules
