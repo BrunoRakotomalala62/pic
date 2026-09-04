@@ -1,0 +1,9 @@
+# Ne JAMAIS committer les identifiants seedream.pro
+.env
+.env.*
+!.env.example
+
+node_modules/
+*.log
+.vercel/
+.DS_Store

@@ -1,0 +1,18 @@
+{
+  "name": "seedream-api",
+  "version": "1.0.0",
+  "description": "API REST wrapper autour du générateur d'images Seedream (seedream.pro) — génération texte→image et modification d'image (image source + prompt).",
+  "type": "module",
+  "main": "server.mjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node server.mjs",
+    "test:txt2img": "node scripts/test-txt2img.mjs",
+    "test:modification": "node scripts/test-modification.mjs"
+  },
+  "dependencies": {},
+  "license": "MIT"
+}
