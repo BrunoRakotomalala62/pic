@@ -75,7 +75,7 @@ function upstreamError(body, fallbackMessage, requestId) {
     b = body;
   }
   const er = (b && typeof b === 'object' && b.error && typeof b.error === 'object') ? b.error : {};
-  const reqId = er.requestId || requestId || b.requestId || undefined;
+  const reqId = er.requestId || (b && b.requestId) || requestId || undefined;
   return makeErr(
     er.code || 'UPSTREAM_ERROR',
     er.message || (b && b.message) || fallbackMessage || 'Erreur du service distant',
